@@ -81,13 +81,19 @@ sys_read(void)
 int
 sys_write(void)
 {
-  struct file *f;
-  int n;
-  char *p;
 
-  if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argptr(1, &p, n) < 0)
+  int fd;
+  char *buf;
+  int n;
+
+  if(argint(0, &fd) < 0 ||
+     argptr(1, &buf, n) < 0 ||
+     argint(2, &n) < 0)
     return -1;
-  return filewrite(f, p, n);
+
+  cprintf("[KERNEL] sys_write invoked\n");
+
+  return filewrite(fd, buf, n);
 }
 
 int
