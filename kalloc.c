@@ -56,6 +56,7 @@ freerange(void *vstart, void *vend)
 // which normally should have been returned by a
 // call to kalloc().  (The exception is when
 // initializing the allocator; see kinit above.)
+//添加看到复用
 void
 kfree(char *v)
 {
@@ -79,6 +80,7 @@ kfree(char *v)
 // Allocate one 4096-byte page of physical memory.
 // Returns a pointer that the kernel can use.
 // Returns 0 if the memory cannot be allocated.
+//在return前加日志
 char*
 kalloc(void)
 {
