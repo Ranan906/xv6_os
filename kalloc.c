@@ -64,16 +64,16 @@ kfree(char *v)
   if((uint)v % PGSIZE || v < end || V2P(v) >= PHYSTOP)
     panic("kfree");
 
-  // Fill with junk to catch dangling refs.
+  cprintf("[MEM] free page at 0x%x\n", (uint)v);
+
   memset(v, 1, PGSIZE);
 
-  if(kmem.use_lock)
-    acquire(&kmem.lock);
   r = (struct run*)v;
+
+  acquire(&kmem.lock);
   r->next = kmem.freelist;
   kmem.freelist = r;
-  if(kmem.use_lock)
-    release(&kmem.lock);
+  release(&kmem.lock);
 }
 
 // Allocate one 4096-byte page of physical memory.
@@ -84,13 +84,15 @@ kalloc(void)
 {
   struct run *r;
 
-  if(kmem.use_lock)
-    acquire(&kmem.lock);
+  acquire(&kmem.lock);
   r = kmem.freelist;
   if(r)
     kmem.freelist = r->next;
-  if(kmem.use_lock)
-    release(&kmem.lock);
+  release(&kmem.lock);
+
+  if(r)
+    cprintf("[MEM] alloc page at 0x%x\n", (uint)r);
+
   return (char*)r;
 }
 
