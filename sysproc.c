@@ -43,6 +43,12 @@ sys_getpid(void)
 }
 
 int
+sys_getpid_plus(void)
+{
+  return myproc()->pid + 1;
+}
+
+int
 sys_sbrk(void)
 {
   int addr;
